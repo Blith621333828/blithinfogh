@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>blith info</title>
+    <link rel="icon" href="info.png" type="image/png">
+    <style>
+        body {
+            background-color: black;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            color: #00FFFF;
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+        }
+
+        .button-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+        }
+
+        .button {
+            background-color: #00FFFF;
+            border: none;
+            color: black;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 10px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-bottom: 20px;
+        }
+
+        .button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 15px #00FFFF;
+        }
+
+        .sidebar {
+            height: 100%;
+            width: 0;
+            position: fixed;
+            z-index: 1;
+            top: 0;
+            left: 0;
+            background-color: #333;
+            overflow-x: hidden;
+            transition: 0.5s;
+            padding-top: 60px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .sidebar a {
+            padding: 10px 15px;
+            text-decoration: none;
+            font-size: 20px;
+            color: #818181;
+            display: block;
+            transition: 0.3s;
+            background-color: #444;
+            border-radius: 15px;
+            margin-top: 15px;
+            text-align: center;
+            width: 90%;
+        }
+
+        .sidebar a:hover {
+            color: #f1f1f1;
+            background-color: #555;
+        }
+
+        .sidebar .closebtn {
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            font-size: 36px;
+            color: white;
+            background-color: #333;
+            border: none;
+            border-radius: 5px;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+
+        .openbtn {
+            font-size: 20px;
+            cursor: pointer;
+            background-color: #444;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            margin: 10px;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            border-radius: 5px;
+            transition: 0.3s;
+        }
+
+        .openbtn:hover {
+            background-color: #555;
+        }
+
+        #main {
+            transition: margin-left .5s;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .coming-soon-sidebar {
+            font-size: 24px;
+            margin-top: 20px;
+            color: white;
+            margin-left: 10px;
+            text-align: center;
+        }
+
+        .coming-soon-main {
+            font-size: 36px;
+            margin-top: 20px;
+            color: white;
+            text-align: center;
+        }
+
+        .panda-leak {
+            color: white;
+            font-size: 18px;
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        .easter-egg {
+            color: yellow;
+            font-size: 24px;
+            position: fixed;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: none;
+            text-align: center;
+        }
+
+        .snake-button {
+            background-color: yellow;
+            border: none;
+            color: black;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 14px;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+
+        .back-button {
+            background-color: lightgray;
+            border: none;
+            color: black;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 14px;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+
+        canvas {
+            background-color: #000;
+            display: none;
+        }
+
+        .game-over {
+            color: red;
+            font-size: 48px;
+            font-weight: bold;
+            position: absolute;
+            top: 40%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="mySidebar" class="sidebar">
+        <button class="closebtn" onclick="toggleNav()">&#10006;</button>
+        <a href="https://discord.gg/tprMsdVemD" target="_blank">Discord</a>
+        <a href="https://www.instagram.com/playboi_blith/" target="_blank">Instagram</a>
+        <div class="coming-soon-sidebar">COMING SOON...</div>
+    </div>
+
+    <div id="main">
+        <button class="openbtn" onclick="toggleNav()">☰</button>
+        <div class="button-container">
+            <a href="pandabuylist.zip" download>
+                <button class="button">Pobierz plik</button>
+            </a>
+            <div class="panda-leak">PandaBuyLeak</div>
+        </div>
+        <div class="coming-soon-main" id="comingSoonMain">COMING SOON...</div>
+    </div>
+
+    <div class="easter-egg" id="easterEgg">
+        Gratulacje! Znalazłeś Easter Egga!<br>
+        <button class="snake-button" onclick="startSnake()">Zagraj w Snake</button>
+    </div>
+
+    <audio id="easterEggSound" src="easter-egg-sound.mp3"></audio>
+    <canvas id="snakeGame" width="400" height="400"></canvas>
+    <button class="back-button" id="backButton" onclick="goBack()" style="display:none;">Wróć</button>
+    <div class="game-over" id="gameOver">GAME OVER!</div>
+
+    <script>
+        function toggleNav() {
+            const sidebar = document.getElementById("mySidebar");
+            const main = document.getElementById("main");
+            if (sidebar.style.width === "250px") {
+                sidebar.style.width = "0";
+                main.style.marginLeft = "0";
+            } else {
+                sidebar.style.width = "250px";
+                main.style.marginLeft = "250px";
+            }
+        }
+
+        let easterEggCode = "blith";
+        let easterEggProgress = 0;
+
+        document.addEventListener("keydown", function(event) {
+            if (event.key === easterEggCode[easterEggProgress]) {
+                easterEggProgress++;
+                if (easterEggProgress === easterEggCode.length) {
+                    document.getElementById("easterEgg").style.display = "block";
+                    document.getElementById("easterEggSound").play();
+                    easterEggProgress = 0;
+                }
+            } else {
+                easterEggProgress = 0;
+            }
+        });
+
+        function startSnake() {
+            // Hide all elements except the canvas and the back button
+            document.getElementById("main").style.display = "none";
+            document.getElementById("easterEgg").style.display = "none";
+            document.getElementById("snakeGame").style.display = "block";
+            document.getElementById("backButton").style.display = "block";
+
+            const canvas = document.getElementById("snakeGame");
+            const ctx = canvas.getContext("2d");
+
+            let box = 20;
+            let snake = [];
+            snake[0] = {
+                x: 9 * box,
+                y: 10 * box
+            };
+
+            let food = {
+                x: Math.floor(Math.random() * 19 + 1) * box,
+                y: Math.floor(Math.random() * 19 + 1) * box
+            };
+
+            let d;
+            let game;
+
+            document.addEventListener("keydown", direction);
+
+            function direction(event) {
+                if (event.keyCode == 37 && d != "RIGHT") {
+                    d = "LEFT";
+                } else if (event.keyCode == 38 && d != "DOWN") {
+                    d = "UP";
+                } else if (event.keyCode == 39 && d != "LEFT") {
+                    d = "RIGHT";
+                } else if (event.keyCode == 40 && d != "UP") {
+                    d = "DOWN";
+                }
+            }
+
+            function draw() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                for (let i = 0; i < snake.length; i++) {
+                    ctx.fillStyle = (i == 0) ? "green" : "white";
+                    ctx.fillRect(snake[i].x, snake[i].y, box, box);
+
+                    ctx.strokeStyle = "red";
+                    ctx.strokeRect(snake[i].x, snake[i].y, box, box);
+                }
+
+                ctx.fillStyle = "red";
+                ctx.fillRect(food.x, food.y, box, box);
+
+                let snakeX = snake[0].x;
+                let snakeY = snake[0].y;
+
+                if (d == "LEFT") snakeX -= box;
+                if (d == "UP") snakeY -= box;
+                if (d == "RIGHT") snakeX += box;
+                if (d == "DOWN") snakeY += box;
+
+                if (snakeX == food.x && snakeY == food.y) {
+                    food = {
+                        x: Math.floor(Math.random() * 19 + 1) * box,
+                        y: Math.floor(Math.random() * 19 + 1) * box
+                    };
+                } else {
+                    snake.pop();
+                }
+
+                let newHead = {
+                    x: snakeX,
+                    y: snakeY
+                };
+
+                if (snakeX < 0 || snakeY < 0 || snakeX >= canvas.width || snakeY >= canvas.height || collision(newHead, snake)) {
+                    clearInterval(game);
+                    document.getElementById("gameOver").style.display = "block"; // Show Game Over message
+                }
+
+                snake.unshift(newHead);
+
+                // Draw border
+                ctx.strokeStyle = "yellow";
+                ctx.lineWidth = 2;
+                ctx.strokeRect(0, 0, canvas.width, canvas.height);
+            }
+
+            function collision(head, array) {
+                for (let i = 0; i < array.length; i++) {
+                    if (head.x == array[i].x && head.y == array[i].y) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+
+            game = setInterval(draw, 150);
+        }
+
+        function goBack() {
+            // Show all elements and hide the canvas, back button, and game over message
+            document.getElementById("main").style.display = "flex";
+            document.getElementById("easterEgg").style.display = "block";
+            document.getElementById("snakeGame").style.display = "none";
+            document.getElementById("backButton").style.display = "none";
+            document.getElementById("gameOver").style.display = "none";
+
+            // Reset the coming soon message position
+            document.getElementById("comingSoonMain").style.marginTop = "20px";
+        }
+    </script>
+</body>
+</html>
